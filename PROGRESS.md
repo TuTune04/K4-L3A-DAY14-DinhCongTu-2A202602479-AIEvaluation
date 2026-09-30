@@ -20,3 +20,10 @@
 - Added Markdown improvement logs with metadata IDs, escaped pipes, suggestion fallback, and Open status.
 - Copied template.py to solution/solution.py and verified the demo runs successfully.
 - Required pytest command passed: 41 passed, 1 skipped.
+
+## Task 6: Golden dataset — 20 QA with verbatim evidence
+- Filled all 20 golden QA records in English while preserving metadata and record order.
+- Added short verbatim evidence excerpts covering all 10 corpus documents.
+- Covered policy exceptions and three adversarial cases with scope evidence.
+- Added dataset tests for validation, record count, difficulty distribution, and full document coverage.
+- Dataset validation prints PASS; the required pytest command reports 42 passed and 1 skipped.
