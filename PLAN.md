@@ -36,9 +36,10 @@ Exercise 3.5 (reranking, +5).
 - Worksheet answers may be written in Vietnamese or English (the templates are Vietnamese; mirror them). Every number
   written into `exercises.md` / `reflection.md` must come from the generated artifacts — never invent scores.
 - Never create or commit `.env` or any API key. `artifacts/` **is** committed (optional evidence of the real run).
-- No `OPENAI_API_KEY` is present in this container. Task 7 handles this with an offline generator plugged into the
-  unmodified `domain_assistant.generate_actual_answers()`; if a key is available at run time, use the real
-  `python domain_assistant.py` instead.
+- **Decision (user):** the user provides a real `OPENAI_API_KEY` in a local, git-ignored `.env` in the repo root.
+  Task 7 MUST produce `artifacts/actual_answers.json` with the real `python domain_assistant.py` (rubric requires real
+  answers). The offline generator is only a deterministic helper for tests, never the source of the submitted answers.
+  Never print, copy, or commit the key.
 
 **Expected test count at the end:** `tests/test_solution.py` = 42 passed, 0 skipped (the rerank test stops skipping
 once the bonus is implemented), plus the new test files added by this plan, all passing.
@@ -196,9 +197,11 @@ TEST_CMD: python -m pytest tests/ -q
 `artifacts/actual_answers.json`, `artifacts/benchmark_results.json`, `artifacts/benchmark_table.md`.
 
 **Steps.**
-1. If `OPENAI_API_KEY` is set in the environment (or a local, uncommitted `.env` exists with a real key): run
-   `python domain_assistant.py` and skip to step 4 (still write `offline_generator.py` + its test so the suite is
-   deterministic).
+1. **Required:** run the real `python domain_assistant.py` (it reads `OPENAI_API_KEY` from the local `.env`) to
+   create `artifacts/actual_answers.json`. If it fails (missing key, network), stop and report the error — do NOT
+   substitute offline answers. Still write `offline_generator.py` + its test (steps 2–3) so the test suite stays
+   deterministic and does not call the API, but do not overwrite the real `artifacts/actual_answers.json` with it
+   (its `main()` must write to a different path, e.g. `artifacts/actual_answers_offline.json`).
 2. Create `offline_generator.py` with `class ExtractiveGenerator` implementing the `TextGenerator` protocol
    (`generate(prompt: str) -> str`, attribute `model = "offline-extractive-v1"`). It parses the prompt produced by
    `domain_assistant._build_prompt` (text between `Question:` and `Retrieved contexts:`; context bodies after each
@@ -214,10 +217,10 @@ TEST_CMD: python -m pytest tests/ -q
    comes from the contexts; (b) a prompt with `[No relevant context was retrieved.]` returns the fallback message;
    (c) `generate_actual_answers(...)` with `ExtractiveGenerator()` on the real dataset returns 20 answers, each with
    non-empty `actual_answer` and 5 `retrieved_contexts`, and `agent.model == "offline-extractive-v1"`.
-4. Run `python offline_generator.py` (or step 1's command), then
+4. After the real run from step 1, run
    `python evaluate_answers.py | tee artifacts/benchmark_table.md`.
 
-**Acceptance.** `artifacts/actual_answers.json` has 20 answers with `error: null`;
+**Acceptance.** `artifacts/actual_answers.json` has 20 answers with `error: null` and `agent.model` is the OpenAI model (not `offline-extractive-v1`);
 `artifacts/benchmark_results.json` has 20 `results` with non-null `context_recall`/`context_precision` and a
 non-empty `failure_analysis.improvement_log`; `python -m pytest tests/ -q` → all pass (1 skipped). No `.env` is
 staged (`git status --porcelain | grep -c '\.env$'` prints 0).
