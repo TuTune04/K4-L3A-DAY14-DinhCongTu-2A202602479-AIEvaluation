@@ -27,3 +27,10 @@
 - Covered policy exceptions and three adversarial cases with scope evidence.
 - Added dataset tests for validation, record count, difficulty distribution, and full document coverage.
 - Dataset validation prints PASS; the required pytest command reports 42 passed and 1 skipped.
+
+## Task 7: Generate actual answers (real RAG run) and the benchmark artifact
+- Added a deterministic ExtractiveGenerator that ranks retrieved sentences by question token overlap and provides an evidence fallback.
+- Added offline generation tests covering extraction order, missing context, absent overlap, and all 20 dataset questions.
+- Kept offline CLI output separate at artifacts/actual_answers_offline.json to preserve real submitted answers.
+- Ran the real domain assistant with gpt-4o-mini and saved 20 answers without errors, plus benchmark JSON and Markdown artifacts.
+- Verified artifact acceptance checks and both pytest commands: 46 passed, 1 skipped; no .env appears in git status.
