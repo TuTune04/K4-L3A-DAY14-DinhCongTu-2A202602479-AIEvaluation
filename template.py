@@ -503,10 +503,16 @@ class BenchmarkRunner:
         Returns:
             List of EvalResult, one per qa_pair.
         """
-        # TODO: for each pair, call agent_fn(pair.question), then run_full_eval.
-        # Pass pair.retrieved_contexts as the optional contexts argument and
-        # preserve the original pair on the returned EvalResult.
-        raise NotImplementedError("Implement BenchmarkRunner.run")
+        results: list[EvalResult] = []
+        for pair in qa_pairs:
+            answer = agent_fn(pair.question)
+            result = evaluator.run_full_eval(
+                answer, pair.question, pair.context or "", pair.expected_answer,
+                contexts=pair.retrieved_contexts,
+            )
+            result.qa_pair = pair
+            results.append(result)
+        return results
 
     def generate_report(self, results: list[EvalResult]) -> dict[str, Any]:
         """
@@ -528,10 +534,36 @@ class BenchmarkRunner:
         Average only non-None retrieval scores. Return None for a retrieval
         average when no result contains that metric.
         """
-        # TODO
-        raise NotImplementedError("Implement generate_report")
+        total = len(results)
+        passed = sum(result.passed for result in results)
+        report: dict[str, Any] = {
+            "total": total,
+            "passed": passed,
+            "pass_rate": passed / total if total else 0.0,
+        }
+        for metric in ("faithfulness", "relevance", "completeness"):
+            report[f"avg_{metric}"] = (
+                sum(getattr(result, metric) for result in results) / total
+                if total else 0.0
+            )
+        for metric in ("context_recall", "context_precision"):
+            scores = [
+                score for result in results
+                if (score := getattr(result, metric)) is not None
+            ]
+            report[f"avg_{metric}"] = sum(scores) / len(scores) if scores else None
+        failure_types: dict[str, int] = {}
+        for result in results:
+            if result.failure_type is not None:
+                failure_types[result.failure_type] = (
+                    failure_types.get(result.failure_type, 0) + 1
+                )
+        report["failure_types"] = failure_types
+        return report
 
-    def run_regression(self, new_results: list, baseline_results: list) -> dict:
+    def run_regression(
+        self, new_results: list[EvalResult], baseline_results: list[EvalResult],
+    ) -> dict[str, Any]:
         """Compare new evaluation results against a baseline.
 
         A regression is when a metric's average drops by more than 0.05 vs baseline.
@@ -551,9 +583,25 @@ class BenchmarkRunner:
               - 'regressions': list[str] — names of metrics that regressed
               - 'passed': bool — True if no regressions
 
-        TODO: Compute avg per metric, compare, list regressions, set passed flag
         """
-        raise NotImplementedError
+        report: dict[str, Any] = {}
+        regressions: list[str] = []
+        for metric in ("faithfulness", "relevance", "completeness"):
+            new_avg = (
+                sum(getattr(result, metric) for result in new_results) / len(new_results)
+                if new_results else 0.0
+            )
+            baseline_avg = (
+                sum(getattr(result, metric) for result in baseline_results)
+                / len(baseline_results) if baseline_results else 0.0
+            )
+            report[f"new_avg_{metric}"] = new_avg
+            report[f"baseline_avg_{metric}"] = baseline_avg
+            if baseline_avg - new_avg > 0.05:
+                regressions.append(metric)
+        report["regressions"] = regressions
+        report["passed"] = not regressions
+        return report
 
     def identify_failures(
         self,
@@ -570,8 +618,12 @@ class BenchmarkRunner:
         Returns:
             List of failing EvalResults.
         """
-        # TODO
-        raise NotImplementedError("Implement identify_failures")
+        return [
+            result for result in results
+            if any(score < threshold for score in (
+                result.faithfulness, result.relevance, result.completeness,
+            ))
+        ]
 
 
 # ---------------------------------------------------------------------------
