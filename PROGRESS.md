@@ -68,3 +68,10 @@
 - Filled only Exercise 3.4 with artifact-backed results, framework setup details, sources, and explicit offline-proxy limitations.
 - Added tests for sentence support, threshold boundaries, strict rounding, empty inputs, and artifact reproducibility.
 - Verified both plain pytest and the required pending_ok command: 60 tests passed.
+
+## Task 13: Final consistency checks and deliverables test
+- Added deliverables tests for completed code, matching solution files, filled worksheets, an untracked .env, and 20 benchmark results.
+- Synced template.py to solution/solution.py and confirmed identical contents.
+- Removed the remaining worksheet placeholder and checked every completion item, including Exercises 3.4 and 3.5.
+- Validated the golden dataset and reproduced the benchmark artifact without changing its scores.
+- Both plain pytest and the required pending_ok command passed: 68 passed, 0 skipped; removed generated caches.
