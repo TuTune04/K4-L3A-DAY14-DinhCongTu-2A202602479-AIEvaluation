@@ -41,3 +41,9 @@
 - Documented representative H03, M01, and A02 cases, evidence challenges, and all three confirmations.
 - Verified the requested sections contain no placeholders or empty answers; left other worksheet sections unchanged.
 - Required pytest command and plain pytest both passed: 46 passed, 1 skipped.
+
+## Task 9: `exercises.md` Exercise 3.2 (benchmark) and Exercise 3.3 (judge rubric)
+- Filled Exercise 3.2 with all 20 benchmark rows, artifact-derived averages, failure counts, and the three lowest-scoring cases.
+- Identified gpt-4o-mini as the generator and diagnosed retrieval versus generation issues, including overlap-metric limits for refusals.
+- Completed Exercise 3.3 with four dimensions, concrete OrbitTech scoring levels and examples, three edge cases, and bias controls.
+- Verified all benchmark row scores against benchmark_results.json; required pytest command passed with 46 passed and 1 skipped.
