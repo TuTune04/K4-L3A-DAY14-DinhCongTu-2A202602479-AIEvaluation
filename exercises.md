@@ -300,20 +300,35 @@ thay đổi Context Recall hay không.
 
 | ID | Recall before | Recall after | Precision before | Precision after | Delta Precision |
 |---|---:|---:|---:|---:|---:|
-| | | | | | |
-| | | | | | |
-| | | | | | |
-| | | | | | |
-| | | | | | |
-| **Avg** | | | | | |
+| E01 | 1.000 | 1.000 | 0.750 | 0.833 | 0.083 |
+| E02 | 0.833 | 0.833 | 0.887 | 1.000 | 0.113 |
+| E03 | 0.857 | 0.857 | 1.000 | 1.000 | 0.000 |
+| E04 | 1.000 | 1.000 | 1.000 | 1.000 | 0.000 |
+| E05 | 0.778 | 0.778 | 1.000 | 1.000 | 0.000 |
+| M01 | 0.882 | 0.882 | 1.000 | 1.000 | 0.000 |
+| M02 | 0.438 | 0.438 | 1.000 | 1.000 | 0.000 |
+| M03 | 0.973 | 0.973 | 1.000 | 1.000 | 0.000 |
+| M04 | 0.760 | 0.760 | 0.950 | 0.950 | 0.000 |
+| M05 | 0.842 | 0.842 | 0.950 | 1.000 | 0.050 |
+| M06 | 0.667 | 0.667 | 1.000 | 1.000 | 0.000 |
+| M07 | 0.955 | 0.955 | 0.917 | 1.000 | 0.083 |
+| H01 | 0.792 | 0.792 | 1.000 | 1.000 | 0.000 |
+| H02 | 0.870 | 0.870 | 1.000 | 1.000 | 0.000 |
+| H03 | 0.793 | 0.793 | 1.000 | 1.000 | 0.000 |
+| H04 | 0.793 | 0.793 | 1.000 | 1.000 | 0.000 |
+| H05 | 0.765 | 0.765 | 1.000 | 1.000 | 0.000 |
+| A01 | 0.722 | 0.722 | 0.804 | 0.887 | 0.083 |
+| A02 | 0.889 | 0.889 | 1.000 | 1.000 | 0.000 |
+| A03 | 0.941 | 0.941 | 1.000 | 1.000 | 0.000 |
+| Avg | 0.827 | 0.827 | 0.963 | 0.984 | 0.021 |
 
 **Tại sao Recall dự kiến không đổi?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Reranking chỉ đổi thứ tự, giữ nguyên mọi chunk. Context Recall được tính trên hợp các token của toàn bộ chunks; hợp này không phụ thuộc thứ tự nên Recall không đổi ở tất cả 20 cases. Reranker dùng câu hỏi, không dùng expected_answer; expected_answer chỉ dùng để chấm metrics. Bảng và Avg trên toàn bộ 20 cases lấy từ `artifacts/rerank_results.json` (làm tròn 3 chữ số). Precision trung bình tăng từ 0.963 lên 0.984; E01, E02, M05, M07 và A01 cải thiện.
 
 **Khi nào reranking không đủ và cần sửa retriever/query/chunking?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Nếu chunk chứa bằng chứng liên quan chưa được truy xuất thì đổi thứ tự không thể bổ sung bằng chứng và không tăng Recall. Cần sửa retriever, viết lại query (query rewriting), điều chỉnh chunking hoặc tăng top_k. Lexical overlap cũng có thể xếp nhầm chunk khi câu hỏi và bằng chứng dùng từ khác nhau; Precision không được đảm bảo luôn tăng.
 
 ---
 

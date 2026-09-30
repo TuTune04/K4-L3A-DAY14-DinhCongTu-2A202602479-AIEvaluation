@@ -1,0 +1,320 @@
+{
+  "reranker": "question_token_overlap",
+  "results": [
+    {
+      "id": "E01",
+      "before": {
+        "context_recall": 1.0,
+        "context_precision": 0.75
+      },
+      "after": {
+        "context_recall": 1.0,
+        "context_precision": 0.8333333333333333
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.08333333333333326
+      }
+    },
+    {
+      "id": "E02",
+      "before": {
+        "context_recall": 0.8333333333333334,
+        "context_precision": 0.8875
+      },
+      "after": {
+        "context_recall": 0.8333333333333334,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.11250000000000004
+      }
+    },
+    {
+      "id": "E03",
+      "before": {
+        "context_recall": 0.8571428571428571,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.8571428571428571,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "E04",
+      "before": {
+        "context_recall": 1.0,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 1.0,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "E05",
+      "before": {
+        "context_recall": 0.7777777777777778,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.7777777777777778,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M01",
+      "before": {
+        "context_recall": 0.8823529411764706,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.8823529411764706,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M02",
+      "before": {
+        "context_recall": 0.4375,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.4375,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M03",
+      "before": {
+        "context_recall": 0.972972972972973,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.972972972972973,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M04",
+      "before": {
+        "context_recall": 0.76,
+        "context_precision": 0.95
+      },
+      "after": {
+        "context_recall": 0.76,
+        "context_precision": 0.95
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M05",
+      "before": {
+        "context_recall": 0.8421052631578947,
+        "context_precision": 0.95
+      },
+      "after": {
+        "context_recall": 0.8421052631578947,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.050000000000000044
+      }
+    },
+    {
+      "id": "M06",
+      "before": {
+        "context_recall": 0.6666666666666666,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.6666666666666666,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "M07",
+      "before": {
+        "context_recall": 0.9545454545454546,
+        "context_precision": 0.9166666666666666
+      },
+      "after": {
+        "context_recall": 0.9545454545454546,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.08333333333333337
+      }
+    },
+    {
+      "id": "H01",
+      "before": {
+        "context_recall": 0.7916666666666666,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.7916666666666666,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "H02",
+      "before": {
+        "context_recall": 0.8695652173913043,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.8695652173913043,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "H03",
+      "before": {
+        "context_recall": 0.7931034482758621,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.7931034482758621,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "H04",
+      "before": {
+        "context_recall": 0.7931034482758621,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.7931034482758621,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "H05",
+      "before": {
+        "context_recall": 0.7647058823529411,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.7647058823529411,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "A01",
+      "before": {
+        "context_recall": 0.7222222222222222,
+        "context_precision": 0.8041666666666667
+      },
+      "after": {
+        "context_recall": 0.7222222222222222,
+        "context_precision": 0.8875
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.08333333333333326
+      }
+    },
+    {
+      "id": "A02",
+      "before": {
+        "context_recall": 0.8888888888888888,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.8888888888888888,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "id": "A03",
+      "before": {
+        "context_recall": 0.9411764705882353,
+        "context_precision": 1.0
+      },
+      "after": {
+        "context_recall": 0.9411764705882353,
+        "context_precision": 1.0
+      },
+      "delta": {
+        "context_recall": 0.0,
+        "context_precision": 0.0
+      }
+    }
+  ],
+  "average": {
+    "id": "Avg",
+    "before": {
+      "context_recall": 0.8274414755717705,
+      "context_precision": 0.9629166666666666
+    },
+    "after": {
+      "context_recall": 0.8274414755717705,
+      "context_precision": 0.9835416666666668
+    },
+    "delta": {
+      "context_recall": 0.0,
+      "context_precision": 0.020624999999999998
+    }
+  }
+}

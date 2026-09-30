@@ -54,3 +54,10 @@
 - Analyzed A02, A01, and M02 with verbatim answers, evidence comparisons, and five-level root causes.
 - Preserved the improvement log verbatim and documented prioritized fixes, regression gates, and monitoring.
 - Verified report placeholders and artifact quotations; both pytest commands passed with 46 passed and 1 skipped.
+
+## Task 11: Bonus Exercise 3.5 — reranking experiment
+- Implemented stable question-token overlap reranking and copied template.py to solution/solution.py.
+- Added a pure reranking comparison function and a script that joins saved cases by ID, writes JSON results, and prints a Markdown table with averages.
+- Generated artifacts/rerank_results.json for all 20 cases; average precision increased from 0.963 to 0.984 while recall stayed unchanged.
+- Filled only Exercise 3.5 with artifact-derived scores and explanations of recall invariance and retrieval limitations.
+- Added tests for chunk preservation, stable ties, question-only ranking, precision improvement, and recall invariance; both required and plain pytest runs passed all 53 tests with no skips.
