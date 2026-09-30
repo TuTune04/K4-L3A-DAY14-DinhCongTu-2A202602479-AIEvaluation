@@ -34,3 +34,10 @@
 - Kept offline CLI output separate at artifacts/actual_answers_offline.json to preserve real submitted answers.
 - Ran the real domain assistant with gpt-4o-mini and saved 20 answers without errors, plus benchmark JSON and Markdown artifacts.
 - Verified artifact acceptance checks and both pytest commands: 46 passed, 1 skipped; no .env appears in git status.
+
+## Task 8: `exercises.md` Part 1 and Exercise 3.1
+- Completed Exercises 1.1–1.3 with OrbitTech metric scenarios, judge bias experiments, human calibration, and proposed deployment thresholds.
+- Filled Exercise 3.1 with validated dataset counts, source coverage, and the PASS result.
+- Documented representative H03, M01, and A02 cases, evidence challenges, and all three confirmations.
+- Verified the requested sections contain no placeholders or empty answers; left other worksheet sections unchanged.
+- Required pytest command and plain pytest both passed: 46 passed, 1 skipped.

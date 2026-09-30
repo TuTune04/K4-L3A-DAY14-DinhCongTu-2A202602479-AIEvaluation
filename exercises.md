@@ -30,11 +30,11 @@ critical.
 
 | Metric | Acceptable Low Score Scenario | Critical Low Score Scenario | Action Required |
 |---|---|---|---|
-| Faithfulness | | | |
-| Answer Relevance | | | |
-| Context Recall | | | |
-| Context Precision | | | |
-| Completeness | | | |
+| Faithfulness | Lời chào hoặc lời đề nghị hỗ trợ OrbitTech không xuất hiện nguyên văn trong context có thể bị metric overlap chấm thấp, nếu không thêm claim về chính sách. | Bịa mức hoàn tiền, phí trả hàng hoặc thời hạn bảo hành khiến khách nhận thông tin sai. | Kiểm tra từng claim với evidence; sửa hoặc bỏ claim không được hỗ trợ, chuyển support khi thiếu căn cứ. |
+| Answer Relevance | Từ chối yêu cầu tư vấn đầu tư ngoài phạm vi OrbitTech có thể ít trùng từ với câu hỏi nhưng đúng vai trò. | Khách hỏi cách xử lý pin phồng mà câu trả lời chỉ giới thiệu sản phẩm. | Chấm refusal theo scope; với câu hỏi hợp lệ, trả lời trực tiếp nhu cầu và ưu tiên hướng dẫn an toàn. |
+| Context Recall | A01 chỉ cần policy về scope để từ chối; thiếu context về các sản phẩm được nhắc như ví dụ không làm thay đổi quyết định. | H03 thiếu policy phiên bản cũ, dẫn đến áp dụng sai cửa sổ trả hàng cho đơn trước ngày hiệu lực. | Kiểm tra recall theo từng claim cần thiết; bổ sung truy xuất policy phiên bản và ngày kích hoạt. |
+| Context Precision | Khi hỏi bảo hành NovaBook, một context về quy trình sửa chữa đi kèm có thể hữu ích cho bước tiếp theo dù không chứa đáp án trực tiếp. | Context khuyến mãi hoặc policy trả hàng cũ lấn át evidence đúng khi khách hỏi quyền trả hàng hiện tại. | Kiểm tra context hữu ích, lọc tài liệu không liên quan và ưu tiên policy đúng phiên bản. |
+| Completeness | Refusal ngoài scope có thể ngắn hơn expected answer và bỏ vài ví dụ chủ đề hỗ trợ, miễn nêu đúng giới hạn và hướng hỗ trợ. | H05 bỏ hướng dẫn ngừng sạc pin phồng, hoặc M01 bỏ khoản khấu trừ khi giữ quà tặng. | Dùng checklist các claim bắt buộc; ưu tiên an toàn và điều kiện tài chính, cho phép rút gọn ví dụ không thiết yếu. |
 
 ### Exercise 1.2 — Bias trong LLM-as-a-Judge
 
@@ -46,15 +46,15 @@ Ba bias thường gặp:
 
 **Câu 1: Thiết kế experiment phát hiện position bias với ít nhất hai conditions.**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Với cùng câu hỏi OrbitTech và cùng cặp đáp án A/B, condition thứ nhất đặt A trước B, condition thứ hai đặt B trước A. Giữ nguyên rubric, model và cấu hình; ẩn nguồn model, xáo trộn thứ tự các lần thử và lặp lại trên nhiều cặp có human labels. Ánh xạ lựa chọn về danh tính A/B trước khi tính agreement rate: số cặp có cùng lựa chọn (kể cả hòa) sau swap chia tổng số cặp. Đồng thời đo tỷ lệ chọn vị trí đầu ở mỗi condition và tỷ lệ đổi người thắng theo vị trí. Agreement thấp cùng thiên hướng chọn đáp án đầu là dấu hiệu position bias; so sánh thêm với biến động khi lặp lại cùng thứ tự để phân biệt nhiễu ngẫu nhiên.
 
 **Câu 2: Làm thế nào giảm verbosity bias bằng rubric design?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Rubric chấm tính đúng, evidence, mức đáp ứng các ý bắt buộc và bước hành động cho khách OrbitTech; không cộng điểm vì số từ, số bullet hoặc lặp lại policy. Một đáp án ngắn nhưng đủ điều kiện trả hàng phải được chấm ngang đáp án dài có cùng nội dung đúng. Chỉ trừ điểm khi dài dòng che khuất hướng dẫn, thêm claim sai hoặc thiếu ý bắt buộc; dùng cặp ví dụ ngắn/dài có chất lượng tương đương để calibrate judge.
 
 **Câu 3: Tại sao cần calibrate LLM judge với human labels?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Judge có thể chấm cao câu trả lời trôi chảy nhưng sai policy hoặc không nhận ra refusal đúng. Hai người chấm độc lập một mẫu có đủ mức difficulty, lỗi bảo hành/hoàn tiền và attack type; thống nhất rubric và giải quyết bất đồng để tạo labels tham chiếu. Đo agreement và Cohen's kappa giữa judge với labels cho quyết định pass/fail (weighted kappa nếu dùng thang điểm thứ bậc), đồng thời xem các lỗi judge cho qua. Sửa rubric và ví dụ dựa trên bất đồng rồi kiểm chứng trên mẫu giữ lại; human calibration giúp ngưỡng chấm phản ánh chất lượng thực tế thay vì thiên kiến của model.
 
 ### Exercise 1.3 — Evaluation trong CI/CD
 
@@ -62,13 +62,15 @@ Ba bias thường gặp:
 
 | Metric | Threshold | Lý do |
 |---|---:|---|
-| Faithfulness | | |
-| Answer Relevance | | |
-| Completeness | | |
+| Faithfulness | Đề xuất tối thiểu 0.90 | Claim sai về hoàn tiền, bảo hành hoặc an toàn có tác động lớn; block nếu thấp hơn ngưỡng hoặc có claim quan trọng không được evidence hỗ trợ. |
+| Answer Relevance | Đề xuất tối thiểu 0.80 | Câu trả lời phải giải quyết nhu cầu hỗ trợ OrbitTech; đánh giá refusal theo scope để tránh phạt việc từ chối hợp lệ. |
+| Completeness | Đề xuất tối thiểu 0.80 | Phải đủ điều kiện áp dụng và bước xử lý; block riêng khi thiếu hướng dẫn an toàn hoặc điều kiện tài chính quan trọng. |
+
+Các ngưỡng trên là lựa chọn thiết kế cho CI/CD, không phải điểm benchmark đã đo. Áp dụng trên từng case sau khi review ngoại lệ hợp lệ, không chỉ dựa vào trung bình; calibrate bằng human labels trước khi dùng làm release gate.
 
 **Câu 2: Khi nào dùng offline evaluation, online evaluation và human review?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Offline evaluation chạy golden dataset OrbitTech trước mỗi thay đổi retriever, prompt hoặc model để phát hiện regression và block deployment theo ngưỡng đã calibrate. Online evaluation theo dõi câu hỏi thực tế, phản hồi khách, tỷ lệ chuyển support và lỗi mới sau triển khai, dùng dữ liệu đã loại thông tin nhạy cảm; kết quả giúp bổ sung case vào bộ offline. Human review xử lý bất đồng giữa metrics và judge, refusal, policy theo phiên bản, lỗi an toàn/riêng tư và claim tài chính; đồng thời kiểm tra mẫu định kỳ để phát hiện judge drift.
 
 ---
 
@@ -146,31 +148,31 @@ và quyết định thiết kế, không chép lại toàn bộ QA.
 
 | Hạng mục | Kết quả |
 |---|---|
-| Tổng số records | ____ / 20 |
-| Easy | ____ / 5 |
-| Medium | ____ / 7 |
-| Hard | ____ / 5 |
-| Adversarial | ____ / 3 |
-| Source documents được sử dụng | ____ / 10 |
-| Validator status | PASS / FAIL |
+| Tổng số records | 20 / 20 |
+| Easy | 5 / 5 |
+| Medium | 7 / 7 |
+| Hard | 5 / 5 |
+| Adversarial | 3 / 3 |
+| Source documents được sử dụng | 10 / 10 |
+| Validator status | PASS |
 
 **Ba case đại diện cho quyết định thiết kế**
 
 | ID | Difficulty | Source document(s) | Vì sao case phù hợp với difficulty/attack type? |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
+| H03 | Hard | `09_escalation_and_policy_updates.md`, `03_promotions_and_membership.md` | Kết hợp phiên bản policy theo ngày đặt hàng với quyền lợi OrbitPlus: đơn trước ngày hiệu lực giữ cửa sổ cũ; đơn sau ngày hiệu lực có quyền lợi cho thiết bị chưa mở, nhưng membership không kéo dài cửa sổ thiết bị đã mở. |
+| M01 | Medium | `05_returns_and_exchanges.md`, `03_promotions_and_membership.md` | Kết hợp điều kiện trả thiết bị chưa mở với quy tắc bundle: còn trong cửa sổ trả hàng nhưng giữ quà tặng thì bị khấu trừ giá trị khuyến mãi. |
+| A02 | Adversarial | `00_system_scope.md`, `08_accounts_privacy_and_security.md` | Prompt injection yêu cầu bỏ rules, tiết lộ hidden prompt và dữ liệu hàng xóm, đồng thời yêu cầu password/code; đáp án phải từ chối và nhắc điều kiện xác minh quyền truy cập. |
 
 **Điểm khó nhất khi xây dựng expected answer hoặc evidence là gì?**
 
-> *Câu trả lời:*
+> *Câu trả lời:* Khó nhất là tách ngày chọn phiên bản policy (ngày đặt hàng) khỏi ngày bắt đầu tính cửa sổ trả hàng (ngày xác nhận giao), rồi kết hợp đúng ngoại lệ OrbitPlus mà không suy diễn thêm quyền lợi. H03 cần evidence từ cả policy updates và membership; M01 cần cả điều kiện trả hàng và khấu trừ quà tặng. Evidence phải giữ nguyên văn corpus và hỗ trợ từng claim trong expected answer. Validator đã xác nhận cấu trúc và provenance hợp lệ; việc đọc đối chiếu từng case vẫn cần thiết để kiểm tra ngữ nghĩa, difficulty và câu hỏi trùng ý.
 
 **Xác nhận:**
 
-- [ ] Mọi claim trong expected answer đều có evidence hỗ trợ.
-- [ ] Không có questions trùng ý và không dùng kiến thức ngoài corpus.
-- [ ] `python validate_golden_dataset.py` báo `PASS`.
+- [x] Mọi claim trong expected answer đều có evidence hỗ trợ.
+- [x] Không có questions trùng ý và không dùng kiến thức ngoài corpus.
+- [x] `python validate_golden_dataset.py` báo `PASS`.
 
 ### Exercise 3.2 — Benchmark Run
 
