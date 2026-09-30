@@ -47,3 +47,10 @@
 - Identified gpt-4o-mini as the generator and diagnosed retrieval versus generation issues, including overlap-metric limits for refusals.
 - Completed Exercise 3.3 with four dimensions, concrete OrbitTech scoring levels and examples, three edge cases, and bias controls.
 - Verified all benchmark row scores against benchmark_results.json; required pytest command passed with 46 passed and 1 skipped.
+
+## Task 10: `reflection.md` — summary, 5 Whys, clustering, improvement log, regression strategy
+- Completed all seven reflection sections using the recorded benchmark and answer traces.
+- Calculated metric summaries, score buckets, and failure distributions from artifacts.
+- Analyzed A02, A01, and M02 with verbatim answers, evidence comparisons, and five-level root causes.
+- Preserved the improvement log verbatim and documented prioritized fixes, regression gates, and monitoring.
+- Verified report placeholders and artifact quotations; both pytest commands passed with 46 passed and 1 skipped.
