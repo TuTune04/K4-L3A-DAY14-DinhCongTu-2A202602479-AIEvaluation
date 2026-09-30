@@ -61,3 +61,10 @@
 - Generated artifacts/rerank_results.json for all 20 cases; average precision increased from 0.963 to 0.984 while recall stayed unchanged.
 - Filled only Exercise 3.5 with artifact-derived scores and explanations of recall invariance and retrieval limitations.
 - Added tests for chunk preservation, stable ties, question-only ranking, precision improvement, and recall invariance; both required and plain pytest runs passed all 53 tests with no skips.
+
+## Task 12: Bonus Exercise 3.4 — framework comparison
+- Implemented offline RAGAS-style continuous metrics and DeepEval-style normal/strict assertions over identical saved inputs.
+- Generated per-case scores, pass flags, means, pass rates, failure IDs, agreement rates, and lab-core references for all 20 records.
+- Filled only Exercise 3.4 with artifact-backed results, framework setup details, sources, and explicit offline-proxy limitations.
+- Added tests for sentence support, threshold boundaries, strict rounding, empty inputs, and artifact reproducibility.
+- Verified both plain pytest and the required pending_ok command: 60 tests passed.

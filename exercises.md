@@ -270,22 +270,23 @@ verbosity bias và self-preference bằng cách nào?
 
 ### Exercise 3.4 — Framework Comparison (Bonus +5)
 
-Chỉ làm sau khi hoàn thành 3.1–3.3. Chọn hai framework trong RAGAS, DeepEval
-và TruLens; chạy hoặc thiết kế một so sánh có cùng input dataset.
+So sánh cùng 20 records từ `golden_dataset.json` và `artifacts/actual_answers.json`, join theo ID bằng `python framework_comparison.py`; kết quả đầy đủ tại `artifacts/framework_comparison.json`. **Scores là offline re-implementations của metric definitions theo heuristic của bài lab, không phải kết quả chạy official RAGAS/DeepEval packages.** Không cài dependency hay gọi LLM mới.
 
-| Tiêu chí | Framework 1: ____ | Framework 2: ____ |
+| Tiêu chí | Framework 1: RAGAS | Framework 2: DeepEval |
 |---|---|---|
-| Setup complexity | | |
-| Metrics available | | |
-| CI/CD integration | | |
-| Kết quả trên cùng dataset | | |
-| Insight rút ra | | |
+| Setup complexity | Official: `pip install ragas`, cấu hình LLM API key/provider cho metrics dùng judge; proxy offline chỉ dùng stdlib và code lab. | Official: `pip install deepeval`, cấu hình LLM API key/provider; thêm pytest-style `assert_test` và `deepeval test run`. Proxy offline không cần key. |
+| Metrics available | Faithfulness, answer/response relevancy, context recall/precision và các metrics khác. Proxy ở đây: sentence faithfulness, question-token relevancy, sentence context recall. | Faithfulness, answer relevancy, contextual recall/precision và các metrics khác. Proxy dùng đúng ba definitions bên trái, thêm per-metric assertions và all-metrics case gate. |
+| CI/CD integration | Chạy evaluation bằng Python trong CI, lưu means; tự đặt regression gates theo ứng dụng. | Test cases/assertions tích hợp pytest và `deepeval test run`; threshold mặc định 0.5, strict mode yêu cầu score 1. |
+| Kết quả trên cùng dataset | Means Faithfulness **0.758173**, Answer Relevancy **0.554469**, Context Recall **0.950000**. Continuous scores không có intrinsic pass threshold. Diagnostic gate riêng (mọi metric ≥ 0.5): **13/20 = 65%**. | Non-strict có cùng raw means và pass **13/20 = 65%**, agreement với diagnostic gate **100%**. Strict means sau rounding: **0.600000 / 0.000000 / 0.900000**, pass **0/20 = 0%**, agreement **35%**. |
+| Insight rút ra | Means giúp theo dõi chất lượng từng thành phần; recall cao không bảo đảm answer liên quan. Support của mỗi sentence là ≥ 50% content tokens xuất hiện trong hợp retrieved contexts; relevancy là tỷ lệ question tokens có trong answer. | Assertions biến cùng scores thành quyết định CI; strict mode làm score < 1 thành 0 và threshold thành 1, nên mọi metric phải hoàn hảo. |
 
-- Scores có nhất quán không?
-- Framework nào strict hơn và vì sao?
-- Hai framework có tìm ra cùng failure cases không?
+- Scores có nhất quán không? **Có với non-strict:** cùng definitions và input nên raw scores trùng hoàn toàn; agreement **100%** chỉ là hệ quả của cùng heuristic/gate, không chứng minh hai official frameworks tương đương. Strict rounding làm thay đổi scores và agreement còn **35%**.
+- Framework nào strict hơn và vì sao? **DeepEval-style strict** nghiêm hơn: mọi metric phải đạt 1, trong khi diagnostic gate/non-strict chỉ yêu cầu ≥ 0.5. Answer relevancy không đạt 1 ở bất kỳ case nào, nên strict fail toàn bộ **20 cases**. RAGAS-style chỉ báo continuous scores, không tự áp pass/fail.
+- Hai framework có tìm ra cùng failure cases không? **Non-strict có:** E01, M02, M03, M05, H05, A01, A02 (**7 cases**). Strict fail mọi ID, thêm **13 cases** so với diagnostic gate. Lab core reference trên cùng retrieved contexts cũng pass **13/20 = 65%** và fail cùng 7 IDs; core dùng token faithfulness/completeness thay vì sentence faithfulness/recall nên không đồng nhất metric definitions.
 
-> *Phân tích:*
+> *Phân tích:* Đây là so sánh chính sách scoring/assertion bằng offline lexical proxies, không phải benchmark accuracy của official packages. Expected answer chỉ dùng trong evaluation recall/core completeness; cả ba scorers nhận cùng actual answer và retrieved contexts, không dùng gold contexts thay retrieval. Empty/content-free inputs nhận score 0; sentences tách theo dấu kết thúc hoặc newline và bỏ stopwords của lab. Lexical support không kiểm tra entailment, phủ định, policy version hay paraphrase, nên cần human/LLM review trước khi kết luận failure thực tế. Lab core reference ở đây dùng retrieved contexts; không thay đổi benchmark artifact cũ vốn dùng gold context để chấm answer-side metrics.
+
+Nguồn definitions và API: [RAGAS metrics](https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/), [DeepEval thresholds](https://deepeval.com/docs/metrics-introduction), [DeepEval faithfulness/strict mode](https://deepeval.com/docs/metrics-faithfulness).
 
 ### Exercise 3.5 — Retrieval Reranking (Bonus +5)
 
