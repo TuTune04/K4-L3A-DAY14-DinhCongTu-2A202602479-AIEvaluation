@@ -657,8 +657,11 @@ class FailureAnalyzer:
             dict mapping failure_type → count.
             Example: {"hallucination": 3, "irrelevant": 2, "incomplete": 5}
         """
-        # TODO
-        raise NotImplementedError("Implement categorize_failures")
+        counts: dict[str, int] = {}
+        for failure in failures:
+            failure_type = failure.failure_type if failure.failure_type is not None else "unknown"
+            counts[failure_type] = counts.get(failure_type, 0) + 1
+        return counts
 
     def find_root_cause(self, failure: EvalResult) -> str:
         """
@@ -670,8 +673,15 @@ class FailureAnalyzer:
             "Answer is missing key information — increase context window or improve generation"
             "Multiple issues detected — review full pipeline"
         """
-        # TODO: compare faithfulness, relevance, completeness, return appropriate string
-        raise NotImplementedError("Implement find_root_cause")
+        scores = (failure.faithfulness, failure.relevance, failure.completeness)
+        if all(score < 0.5 for score in scores):
+            return "Multiple issues detected — review full pipeline"
+        causes = (
+            "Context is missing or irrelevant — improve retrieval",
+            "Answer does not address the question — improve prompt clarity",
+            "Answer is missing key information — increase context window or improve generation",
+        )
+        return causes[min(range(len(scores)), key=lambda index: scores[index])]
 
     def generate_improvement_log(self, failures: list, suggestions: list[str]) -> str:
         """Generate a Markdown table logging failures and improvement actions.
@@ -690,7 +700,24 @@ class FailureAnalyzer:
 
         TODO: Build markdown table with failure details + matched suggestions
         """
-        raise NotImplementedError
+        rows = [
+            "| Failure ID | Type | Root Cause | Suggested Fix | Status |",
+            "|------------|------|------------|---------------|--------|",
+        ]
+        for index, failure in enumerate(failures):
+            failure_id = f"F{index + 1:03d}"
+            if "id" in failure.qa_pair.metadata:
+                failure_id += f" ({failure.qa_pair.metadata['id']})"
+            suggestion = suggestions[min(index, len(suggestions) - 1)] if suggestions else "-"
+            cells = (
+                failure_id,
+                failure.failure_type if failure.failure_type is not None else "unknown",
+                self.find_root_cause(failure),
+                suggestion,
+                "Open",
+            )
+            rows.append("| " + " | ".join(cell.replace("|", "\\|") for cell in cells) + " |")
+        return "\n".join(rows)
 
     def generate_improvement_suggestions(
         self, failures: list[EvalResult]
@@ -708,8 +735,34 @@ class FailureAnalyzer:
         Returns:
             List of at least 3 suggestion strings (or fewer if failures is empty).
         """
-        # TODO: analyze categorized failures and return suggestions
-        raise NotImplementedError("Implement generate_improvement_suggestions")
+        if not failures:
+            return []
+        counts: dict[str, int] = {}
+        for failure_type, count in self.categorize_failures(failures).items():
+            normalized = failure_type.lower()
+            counts[normalized] = counts.get(normalized, 0) + count
+        actions = {
+            "hallucination": "Add a claim-level grounding check and cite retrieved OrbitTech policy context for every factual claim.",
+            "irrelevant": "Use an intent-focused OrbitTech prompt that restates the customer's question before answering.",
+            "incomplete": "Raise top_k, chunk OrbitTech documents by policy section, and add few-shot examples of complete answers.",
+            "off_topic": "Add an OrbitTech scope classifier using 00_system_scope.md before generating an answer.",
+        }
+        suggestions = []
+        for failure_type in sorted(counts, key=lambda item: -counts[item]):
+            action = actions.get(failure_type)
+            if action is not None and action not in suggestions:
+                suggestions.append(action)
+        generic_actions = (
+            "Apply reranking to retrieved OrbitTech policy chunks to raise Context Precision.",
+            "Add failed OrbitTech questions and corrected answers to the regression set.",
+            "Calibrate the evaluation judge against human labels on OrbitTech policy answers.",
+        )
+        for action in generic_actions:
+            if len(suggestions) >= 3:
+                break
+            if action not in suggestions:
+                suggestions.append(action)
+        return suggestions
 
 
 # ---------------------------------------------------------------------------

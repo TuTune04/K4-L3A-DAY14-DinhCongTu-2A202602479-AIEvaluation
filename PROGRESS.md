@@ -13,3 +13,10 @@
 - Implemented typed regression comparisons and threshold-based failure identification.
 - Copied template.py to solution/solution.py.
 - Validation: 12 Task 4 acceptance tests passed; required full suite passed with 32 passed and 10 pending skips.
+
+## Task 5: FailureAnalyzer — categorize, root cause, suggestions, improvement log
+- Implemented FailureAnalyzer category counts and exact score-based root cause messages.
+- Added frequency-ordered, case-insensitive OrbitTech improvement suggestions with generic fallback actions.
+- Added Markdown improvement logs with metadata IDs, escaped pipes, suggestion fallback, and Open status.
+- Copied template.py to solution/solution.py and verified the demo runs successfully.
+- Required pytest command passed: 41 passed, 1 skipped.
